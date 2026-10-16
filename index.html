@@ -329,7 +329,8 @@ footer{padding-block:32px 48px;color:var(--muted);font:400 12px var(--mono);disp
 .btn:hover::after{transform:translateX(120%);transition:transform .7s var(--ease)}
 .sec-head h2 em,.about h2 em,.contact h2 em{background:linear-gradient(90deg,var(--accent),#3fb68e,#e98a5d,var(--accent));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sheen 8s linear infinite;padding-right:.08em}
 @keyframes sheen{to{background-position:300% 0}}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}.js .reveal,.js .reveal .el,.js .reveal .role{opacity:1!important;transform:none!important}.progress{display:none}}
+/* Reduced motion: pause only large, continuous movement; keep fades, the tracker, count-ups, flips and hovers */
+@media (prefers-reduced-motion:reduce){.blobs i,.portrait .arch,.portrait::before,.badge,.tag,.ghost,.flip-hint i{animation:none!important}html{scroll-behavior:auto}.js .reveal,.js .table.reveal .el,.js .firm.reveal .role{transform:none!important}}
 </style>
 
 </head>
@@ -626,7 +627,7 @@ footer{padding-block:32px 48px;color:var(--muted);font:400 12px var(--mono);disp
     var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(l){l.classList.toggle("on",l.getAttribute("href")==="#"+e.target.id)})}})},{rootMargin:"-45% 0px -50% 0px"});
     links.forEach(function(l){var s=document.querySelector(l.getAttribute("href"));if(s)io.observe(s)});
     // Count-up: numbers are already correct at rest, this only replays them on scroll
-    var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var reduce=false;
     var co=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting||reduce)return;co.unobserve(e.target);
       var el=e.target,n=+el.dataset.count,sup=el.querySelector("sup"),t0=performance.now();
       (function tick(t){var k=Math.min(1,(t-t0)/900);el.firstChild.nodeValue=String(Math.round(n*(1-Math.pow(1-k,3))));if(k<1)requestAnimationFrame(tick)})(t0);
@@ -645,7 +646,7 @@ footer{padding-block:32px 48px;color:var(--muted);font:400 12px var(--mono);disp
   [].forEach.call(document.querySelectorAll(".firm"),function(f){[].forEach.call(f.querySelectorAll(".role"),function(r,i){r.style.setProperty("--i",i)})});
 
   // Scroll reveal: only for blocks below the first screen, with a safety timeout
-  if("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+  if("IntersectionObserver" in window){
     var targets=document.querySelectorAll(".board,.sec-head,.about>*,.filters,.table,.detail,.acc,.firm,.edu,.stat,.award,.contact-row,.contact h2");
     var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("shown");ro.unobserve(e.target)}})},{threshold:.12,rootMargin:"0px 0px -6% 0px"});
     document.documentElement.classList.add("js");
@@ -668,7 +669,6 @@ footer{padding-block:32px 48px;color:var(--muted);font:400 12px var(--mono);disp
       for(var i=0;i<dots.length;i++){dots[i].className="gl-dot"+(i<k||k===5?" done":"")+(i===k&&k<5?" now":"");labs[i].className=i<=k?"on":""}
       box.classList.toggle("live",k===5);chip.textContent=notes[k];
     }
-    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){set(5);return}
     var k=0;set(0);
     (function tick(){setTimeout(function(){k=k===5?0:k+1;set(k);tick()},k===5?3200:1100)})();
   })();
